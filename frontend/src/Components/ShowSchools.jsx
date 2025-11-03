@@ -5,7 +5,7 @@ function ShowSchools() {
   const [schools, setSchools] = useState([]);
 
   useEffect(() => {
-    axios.get("https://internshipassignment-eight.vercel.app/api/schools")
+    axios.get("https://internship-assignment-utib-9vupwfj95-harsh0-0singhs-projects.vercel.app/api/schools")
       .then(res => setSchools(res.data));
   }, []);
 
@@ -24,7 +24,7 @@ const ProfileCard = ({ school }) => {
     console.log(school)
   return (
     <div className="relative w-full max-w-[300px] mx-auto h-[350px] rounded-3xl overflow-hidden ">
-      <img src={`https://internshipassignment-eight.vercel.app/${school.image}`} alt={school.name}
+      <img src={`${school.image}`} alt={school.name}
         loading="lazy"
         className="absolute inset-0 w-full h-full object-cover"
       />
