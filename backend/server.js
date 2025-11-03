@@ -42,8 +42,9 @@ const upload = multer({ storage });
 
 app.post("/api/schools", upload.single("image"), (req, res) => {
   const { name, address, city, state, contact, email } = req.body;
+  console.log("Data here", name, address, city, state, contact, email,image)
   const image = req.file ? req.file.path : null; // Cloudinary URL
-console.log("Data here", name, address, city, state, contact, email,image)
+// console.log("Data here", name, address, city, state, contact, email,image)
   const sql =
     "INSERT INTO schools (name, address, city, state, contact, email, image) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
