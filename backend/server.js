@@ -6,10 +6,16 @@ import { v2 as cloudinary } from "cloudinary";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 
 const app = express();
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://internship-assignment-6l26.vercel.app",
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type"],
+  })
+);
 app.use(express.json());
 
-// ✅ MySQL setup
+// MySQL setup
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -17,7 +23,7 @@ const db = mysql.createConnection({
   database: process.env.DB_NAME,
 });
 
-// ✅ Cloudinary setup
+// Cloudinary setup
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.CLOUD_API_KEY,
