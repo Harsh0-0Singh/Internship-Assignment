@@ -5,7 +5,7 @@ function ShowSchools() {
   const [schools, setSchools] = useState([]);
 
   useEffect(() => {
-    axios.get("https://internship-assignment-utib-9vupwfj95-harsh0-0singhs-projects.vercel.app/api/schools")
+    axios.get("https://internship-assignment-bice.vercel.app/api/schools")
       .then(res => setSchools(res.data));
   }, []);
 
