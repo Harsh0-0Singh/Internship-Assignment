@@ -43,14 +43,14 @@ const upload = multer({ storage });
 app.post("/api/schools", upload.single("image"), (req, res) => {
   const { name, address, city, state, contact, email } = req.body;
   const image = req.file ? req.file.path : null; // Cloudinary URL
-
+console.log("Data here", name, address, city, state, contact, email,image)
   const sql =
     "INSERT INTO schools (name, address, city, state, contact, email, image) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
   db.query(sql, [name, address, city, state, contact, email, image], (err) => {
     if (err) {
-      console.error("Database error:", err);
-      return res.status(500).json({ error: "Database insertion failed" });
+      console.error("Database error:",err.sqlMessage || err.message);
+     return res.status(500).json({ error: err.sqlMessage || "Database insertion failed" });
     }
     res.json({ message: "School added successfully", imageUrl: image });
   });
