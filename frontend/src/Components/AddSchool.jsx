@@ -15,7 +15,7 @@ function AddSchool() {
     formData.append("email", data.email);
 
     try {
-      const res = await axios.post("http://localhost:5000/api/schools", formData, {
+      const res = await axios.post("https://internshipassignment-eight.vercel.app/api/schools", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       alert(res.data.message);
