@@ -1,35 +1,57 @@
 import express from "express";
 import cors from "cors";
 import multer from "multer";
-import db from "./db.js";
-import path from "path";
+import mysql from "mysql2";
+import { v2 as cloudinary } from "cloudinary";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
 
 const app = express();
-app.use(cors({
-  origin: "https://internship-assignment-delta-sage.vercel.app",
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true
-}));
+app.use(cors());
 app.use(express.json());
-app.use('/schoolImages', express.static('uploads'));
 
-// Multer setup
-const storage = multer.diskStorage({
-  destination: "uploads/",
-  filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname))
+// ✅ MySQL setup
+const db = mysql.createConnection({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: process.env.DB_NAME,
 });
+
+// ✅ Cloudinary setup
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_API_SECRET,
+});
+
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "schoolImages", // Cloudinary folder
+    allowed_formats: ["jpg", "jpeg", "png", "webp"],
+  },
+});
+
 const upload = multer({ storage });
 
-// Add new school
 app.post("/api/schools", upload.single("image"), (req, res) => {
   const { name, address, city, state, contact, email } = req.body;
-  const image = req.file ? `/schoolImages/${req.file.filename}` : null;
-  const sql = "INSERT INTO schools (name, address, city, state, contact, email, image) VALUES (?, ?, ?, ?, ?, ?, ?)";
-  db.query(sql, [name, address, city, state, contact, email, image], err => {
-    if (err) return res.json({ error: err });
-    res.json({ message: "School added successfully" });
+  const image = req.file ? req.file.path : null; // Cloudinary URL
+
+  const sql =
+    "INSERT INTO schools (name, address, city, state, contact, email, image) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+  db.query(sql, [name, address, city, state, contact, email, image], (err) => {
+    if (err) {
+      console.error("Database error:", err);
+      return res.status(500).json({ error: "Database insertion failed" });
+    }
+    res.json({ message: "School added successfully", imageUrl: image });
   });
 });
+
+app.listen(3000, () => console.log("Server running on port 3000"));
+
 
 // Get all schools
 app.get("/api/schools", (req, res) => {
