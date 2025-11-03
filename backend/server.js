@@ -5,7 +5,11 @@ import db from "./db.js";
 import path from "path";
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: "https://internship-assignment-delta-sage.vercel.app",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
 app.use(express.json());
 app.use('/schoolImages', express.static('uploads'));
 
