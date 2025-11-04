@@ -50,7 +50,7 @@ app.post("/api/schools", upload.single("image"), async (req, res) => {
 
     const sql =
       "INSERT INTO schools (name, address, city, state, contact, email, image) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    await pool.query(sql, [name, address, city, state, contact, email, image]);
+    await db.query(sql, [name, address, city, state, contact, email, image]);
 
     res.json({ message: "School added successfully", imageUrl: image });
   } catch (err) {
@@ -62,7 +62,7 @@ app.post("/api/schools", upload.single("image"), async (req, res) => {
 
 app.get("/api/schools", async (req, res) => {
   try {
-    const [rows] = await pool.query("SELECT * FROM schools");
+    const [rows] = await db.query("SELECT * FROM schools");
     res.json(rows);
   } catch (err) {
     console.error(" Fetch error:", err.message);
