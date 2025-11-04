@@ -6,6 +6,8 @@ import { v2 as cloudinary } from "cloudinary";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 
 const app = express();
+
+// cors setup
 app.use(
   cors({
     origin: "https://internship-assignment-6l26.vercel.app",
@@ -40,32 +42,33 @@ const storage = new CloudinaryStorage({
 
 const upload = multer({ storage });
 
-app.post("/api/schools", upload.single("image"), (req, res) => {
-  const { name, address, city, state, contact, email } = req.body;
-  console.log("Data here1", name, address, city, state, contact, email);
-  const image = req.file ? req.file.path : null; // Cloudinary URL
-console.log("Data here2", name, address, city, state, contact, email,image);
-  const sql =
-    "INSERT INTO schools (name, address, city, state, contact, email, image) VALUES (?, ?, ?, ?, ?, ?, ?)";
+// controllers
+app.post("/api/schools", upload.single("image"), async (req, res) => {
+  try {
+    const { name, address, city, state, contact, email } = req.body;
+    const image = req.file ? req.file.path : null;
 
-  db.query(sql, [name, address, city, state, contact, email, image], (err) => {
-    if (err) {
-      console.error("Database error:",err.sqlMessage || err.message);
-     return res.status(500).json({ error: err.sqlMessage || "Database insertion failed" });
-    }
+    const sql =
+      "INSERT INTO schools (name, address, city, state, contact, email, image) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    await pool.query(sql, [name, address, city, state, contact, email, image]);
+
     res.json({ message: "School added successfully", imageUrl: image });
-  });
+  } catch (err) {
+    console.error("Database error:", err.message);
+    res.status(500).json({ error: "Database insertion failed" });
+  }
 });
 
-app.listen(3000, () => console.log("Server running on port 3000"));
 
-
-// Get all schools
-app.get("/api/schools", (req, res) => {
-  db.query("SELECT * FROM schools", (err, results) => {
-    if (err) return res.json({ error: err });
-    res.json(results);
-  });
+app.get("/api/schools", async (req, res) => {
+  try {
+    const [rows] = await pool.query("SELECT * FROM schools");
+    res.json(rows);
+  } catch (err) {
+    console.error(" Fetch error:", err.message);
+    res.status(500).json({ error: "Failed to fetch schools" });
+  }
 });
+
 
 export default app;

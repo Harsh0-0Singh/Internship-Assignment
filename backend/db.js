@@ -1,16 +1,14 @@
-import mysql from "mysql2";
-const db = mysql.createConnection({
+import mysql from "mysql2/promise";
+
+const db = mysql.createPool({
   host: "crossover.proxy.rlwy.net",
   user: "root",
+  port:"19181",
   password: "zfiPxsuqfzozyhJSBnRJDFfOcKqCUAhL",
   database: "railway",
-  port:19181,
-  connectTimeout: 20000
-});
-
-db.connect(err => {
-  if (err) console.log(err);
-  else console.log("MySQL connected");
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
 });
 
 export default db;
