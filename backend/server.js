@@ -1,13 +1,12 @@
 import express from "express";
 import cors from "cors";
 import multer from "multer";
-import mysql from "mysql2";
 import { v2 as cloudinary } from "cloudinary";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
+import db from "./db.js";
 
 const app = express();
 
-// cors setup
 app.use(
   cors({
     origin: "https://internship-assignment-6l26.vercel.app",
@@ -17,14 +16,6 @@ app.use(
 );
 app.use(express.json());
 
-// MySQL setup
-const db = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASS,
-  database: process.env.DB_NAME,
-});
-
 // Cloudinary setup
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -32,17 +23,30 @@ cloudinary.config({
   api_secret: process.env.CLOUD_API_SECRET,
 });
 
+// Multer storage for Cloudinary
 const storage = new CloudinaryStorage({
   cloudinary,
   params: {
-    folder: "schoolImages", // Cloudinary folder
+    folder: "schoolImages",
     allowed_formats: ["jpg", "jpeg", "png", "webp"],
   },
 });
-
 const upload = multer({ storage });
 
-// controllers
+// Routes
+
+// Test connection once at startup
+(async () => {
+  try {
+    const conn = await db.getConnection();
+    console.log("MySQL connected successfully!");
+    conn.release();
+  } catch (err) {
+    console.error(" MySQL connection failed:", err.message);
+  }
+})();
+
+// POST: Add a school
 app.post("/api/schools", upload.single("image"), async (req, res) => {
   try {
     const { name, address, city, state, contact, email } = req.body;
@@ -59,16 +63,17 @@ app.post("/api/schools", upload.single("image"), async (req, res) => {
   }
 });
 
-
+// GET: Fetch all schools
 app.get("/api/schools", async (req, res) => {
   try {
     const [rows] = await db.query("SELECT * FROM schools");
     res.json(rows);
   } catch (err) {
-    console.error(" Fetch error:", err.message);
+    console.error("Fetch error:", err.message);
     res.status(500).json({ error: "Failed to fetch schools" });
   }
 });
 
+app.listen(3000, () => console.log("Server running on port 3000"));
 
 export default app;
