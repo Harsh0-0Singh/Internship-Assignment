@@ -41,26 +41,26 @@ function AddSchool() {
           <input
             {...register("name")}
             placeholder="School Name"
-            className="w-full border border-gray-300 focus:ring-2 focus:ring-green-400 rounded-lg px-4 py-2 outline-none transition"
+            className="w-full border border-gray-300 focus:ring-2 focus:ring-green-400 rounded-lg px-4 py-2 "
             required
           />
           <input
             {...register("address")}
             placeholder="Address"
-            className="w-full border border-gray-300 focus:ring-2 focus:ring-green-400 rounded-lg px-4 py-2 outline-none transition"
+            className="w-full border border-gray-300 focus:ring-2 focus:ring-green-400 rounded-lg px-4 py-2"
             required
           />
           <div className="grid grid-cols-2 gap-4">
             <input
               {...register("city")}
               placeholder="City"
-              className="border border-gray-300 focus:ring-2 focus:ring-green-400 rounded-lg px-4 py-2 outline-none transition"
+              className="border border-gray-300 focus:ring-2 focus:ring-green-400 rounded-lg px-4 py-2 "
               required
             />
             <input
               {...register("state")}
               placeholder="State"
-              className="border border-gray-300 focus:ring-2 focus:ring-green-400 rounded-lg px-4 py-2 outline-none transition"
+              className="border border-gray-300 focus:ring-2 focus:ring-green-400 rounded-lg px-4 py-2 "
               required
             />
           </div>
@@ -68,14 +68,14 @@ function AddSchool() {
             {...register("contact")}
             placeholder="Contact Number"
             type="tel"
-            className="w-full border border-gray-300 focus:ring-2 focus:ring-green-400 rounded-lg px-4 py-2 outline-none transition"
+            className="w-full border border-gray-300 focus:ring-2 focus:ring-green-400 rounded-lg px-4 py-2 "
             required
           />
           <input
             {...register("email")}
             placeholder="Email Address"
             type="email"
-            className="w-full border border-gray-300 focus:ring-2 focus:ring-green-400 rounded-lg px-4 py-2 outline-none transition"
+            className="w-full border border-gray-300 focus:ring-2 focus:ring-green-400 rounded-lg px-4 py-2 "
             required
           />
           <div>

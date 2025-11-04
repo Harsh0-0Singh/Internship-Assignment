@@ -39,8 +39,9 @@ const ProfileCard = ({ school }) => {
         }}
       ></div>
       <div className="absolute bottom-0 w-full px-5 py-6 z-10 text-white">
-        <div className="mb-1 flex items-center gap-1">
+        <div className="mb-1 flex items-center justify-between gap-1">
           <h2 className="font-semibold text-lg flex">{school.name}</h2>
+          <h3 className="font-light text-md">{school.city}</h3>
         </div>
 
         <div className="text-sm text-white/80 mb-3">
