@@ -35,35 +35,26 @@ const upload = multer({ storage });
 
 // Routes
 
-// connection once at startup
-(async () => {
-  try {
-    const conn = await db.getConnection();
-    console.log("MySQL connected successfully!");
-    conn.release();
-  } catch (err) {
-    console.error(" MySQL connection failed:", err.message);
-  }
-})();
-
-// POST: Add a school
+// Add a school
 app.post("/api/schools", upload.single("image"), async (req, res) => {
   try {
     const { name, address, city, state, contact, email } = req.body;
     const image = req.file ? req.file.path : null;
-
+    if (!name || !address || !city || !state || !contact || !email) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
     const sql =
       "INSERT INTO schools (name, address, city, state, contact, email, image) VALUES (?, ?, ?, ?, ?, ?, ?)";
     await db.query(sql, [name, address, city, state, contact, email, image]);
 
-    res.json({ message: "School added successfully", imageUrl: image });
+    res.json({ message: "School added successfully" });
   } catch (err) {
     console.error("Database error:", err.message);
     res.status(500).json({ error: "Database insertion failed" });
   }
 });
 
-// GET: Fetch all schools
+// Fetch all schools
 app.get("/api/schools", async (req, res) => {
   try {
     const [rows] = await db.query("SELECT * FROM schools");
